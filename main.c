@@ -242,7 +242,7 @@ int inputBoard(int gameBoard[][9], int x, int y, int sol[][9], int gameMode){
         gameBoard[x][y] = sol[x][y];
         return 1;
     } 
-    else if (choice < '0' && choice > '9')
+    else if (choice <= '0' && choice > '9')
     {
         printf("Invalid input.\n");
         return -1;
