@@ -54,3 +54,5 @@ dkms.conf
 # custom
 output/
 .vscode/
+test.c
+saveGame.txt

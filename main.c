@@ -35,6 +35,7 @@ int checkSolutionDetail(int gameBoard[][9], int x, int y);
 int checkFillable(int gameBoard[][9], int x, int y);
 int isLockBoard(int gameBoard[][9]);
 int savePuzzle(int gameBoard[][9], int sol[][9]);
+int loadPuzzle(int gameBoard[][9], int sol[][9], int lsave);
 void printSolution(int puzzle[][9],int solution[][9]);
 
 
@@ -46,29 +47,15 @@ int main()
     // Assume both mode uses same set of puzzle
     // In Part 2, read the puzzle and solution from puzzle.txt
     // You may input your puzzle to debug, e.g., replace some entries of the solution by 0 
-    int myPuzzle[9][9]={
-        {5,0,0,0,6,3,4,0,0},
-        {0,0,0,7,0,0,0,0,0},
-        {1,0,0,0,5,0,8,3,0},
-        {0,0,0,0,1,8,0,0,7},
-        {0,0,6,9,0,0,0,0,0},
-        {0,4,3,0,0,0,9,0,0},
-        {0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,7,0,0,2,0},
-        {3,2,0,6,4,0,5,0,0}
-    };
+    int myPuzzle[9][9];
     // The solution
-    int mySolution[9][9] = {
-        {5,9,8,1,6,3,4,7,2},
-        {6,3,2,7,8,4,1,5,9},
-        {1,7,4,2,5,9,8,3,6},
-        {2,5,9,4,1,8,3,6,7},
-        {8,1,6,9,3,7,2,4,5},
-        {7,4,3,5,2,6,9,8,1},
-        {4,6,5,8,9,2,7,1,3},
-        {9,8,1,3,7,5,6,2,4},
-        {3,2,7,6,4,1,5,9,8}
-    };
+    int mySolution[9][9];
+
+    char ans;
+    printf("Load the saved game (y/n)?", &ans);
+
+    loadPuzzle(myPuzzle, mySolution, ans == 'y');
+
     // Game Board
     int gameBoard[9][9];
 
@@ -153,7 +140,7 @@ int main()
             int num = gameBoard[x][y];
             // check the answer for different game mode
             // e.g., call checkSolutionDetail() for Hard mode
-            if ( num != mySolution[x][y])
+            if (num != mySolution[x][y])
                 if(gameMode == 0)
                     printf("Sorry, %d should not be placed at (%d, %d).\n", num, x, y); 
                 else
@@ -336,6 +323,9 @@ int checkSolutionDetail(int gameBoard[][9], int x, int y){
     It returns 0 if cell (x, y) is locked; and returns 1 if the cell (x, y) can be filled */
 int checkFillable(int gameBoard[][9], int x, int y){
     // TODO: Complete this part
+    int numX[9] = {0};
+    int numY[9] = {0};
+
 }
 
 /* 
@@ -355,13 +345,54 @@ int isLockBoard(int gameBoard[][9]){
 // The program returns 1 if it successfully saves the file, and 0 otherwise.
 int savePuzzle(int gameBoard[][9], int sol[][9]){
     // TODO: Complete this part
+    FILE *fs = fopen("../saveGame.txt", "w");
+    
+    if (fs == NULL)
+        return !!printf("Error in writing file.");
+
+    for (byte i = 0; i < 9; i++) {
+        for (byte j = 0; j < 9; j++) {
+            fprintf(fs, "%d ", gameBoard[i][j]);
+        }
+        fprintf(fs, "\n");
+    }
+    fprintf(fs, "\n");
+
+    for (byte i = 0; i < 9; i++) {
+        for (byte j = 0; j < 9; j++) {
+            fprintf(fs, "%d ", sol[i][j]);
+        }
+        fprintf(fs, "\n");
+    }
+
+    fclose(fs);
+    printf("Game Saved.\n");
 }
 
 // the loadPuzzle function load the gameBoard and solution from the file "saveGame.txt"
 // You may add parameter to this function, e.g, the file to load.
 // The program returns 1 if it successfully loads the file, and 0 otherwise.
-int loadPuzzle(int gameBoard[][9], int sol[][9]){
+int loadPuzzle(int gameBoard[][9], int sol[][9], int lsave){
     // TODO: Complete this part
+    FILE *fs;
+    fs = fopen(lsave ? "saveGame.txt" : "../puzzle.txt", "r");
+    if (fs == NULL)
+        return !!printf("Error in reading file.\n");
+    for (byte i = 0; i < 9; i++) {
+        for (byte j = 0; j < 9; j++) {
+            
+            fscanf(fs, "%d ", &gameBoard[i][j]);
+        }
+        fscanf(fs, "\n");
+    }
+    for (byte i = 0; i < 9; i++) {
+        for (byte j = 0; j < 9; j++) {
+            
+            fscanf(fs, "%d ", &sol[i][j]);
+        }
+        fscanf(fs, "\n");
+    }
+    fclose(fs);
 }
 
 // A helper function to craft a text file containing the inputs to fill in the puzzle according to the solution.
