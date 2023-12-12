@@ -22,9 +22,9 @@
  */
 
 #include <stdio.h>
-/* NO other header files are allowed */
+/* NO other header files are allowed */ // <- wtf ??
 
-/* NO global variables are allowed */
+/* NO global variables are allowed */ // <- wtf ?????? seriously ?????? const int NUM = 9; typedef struct {int mat[9][9]} board; is gone
 
 void initGameBoard(int gameBoard[][9], int puzzle[][9]);
 void printGameBoard(int gameBoard[][9]);
@@ -94,7 +94,9 @@ int main()
     // TODO: Read Game Mode and output selected mode
 
     // Call initGameBoard to read the puzzle to gameBoard
+    initGameBoard(gameBoard, myPuzzle);
     // and call printGameBoard to print it
+    printGameBoard(gameBoard);
     /* Uncomment the following statements to test if they are implemented correctly.
        You can add more if you wish. But remember to delete them before submission*/
 
@@ -137,7 +139,9 @@ void initGameBoard(int gameBoard[][9], int puzzle[][9]) {
 
     // TODO: Complete this part
     // Hint: Copies the content of puzzle to gameBoard
-
+    for (short i = 0; i < 9; i++)
+        for (short j = 0; j < 9; j++)
+            gameBoard[i][j] = puzzle[i][j];
 }
 
 /* Display the specified game board on the screen.
@@ -150,7 +154,29 @@ void printGameBoard(int gameBoard[][9]) {
     // 2. Use conditional statement to print ' ' or 'X' for the two cases (empty or selected cell).
     // 3. Add the borders, col/row numbers
 
+    // brute force = nice
+    printf("  012 345 678\n");
 
+    for (short i = 0; i < 9; i++) { 
+        if (i % 3 == 0)
+            printf(" +---+---+---+\n");
+
+        printf("%d", i);
+        for (short j = 0; j < 9; j++) {
+            if(j % 3 == 0) 
+                printf("|");
+            int n = gameBoard[i][j];
+            if (n > 0)
+                printf("%d", n);
+            else if (n == 0)
+                printf(" ");
+          //else if (n == -1) // selected
+            
+        }
+        printf("|\n");
+    }
+
+    printf(" +---+---+---+");
 }
 
 /* inputBoard() reads a char '1' to '9', or 'H' from the player.
