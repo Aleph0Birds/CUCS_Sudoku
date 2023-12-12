@@ -158,9 +158,16 @@ int main()
                     printf("Sorry, %d should not be placed at (%d, %d).\n", num, x, y); 
                 else
                 {
-                    chances -= checkSolutionDetail(gameBoard, x, y);
-                    if (!chances) break;
-                    printf("You have %d chances left.\n", chances);
+                    if(checkSolutionDetail(gameBoard, x, y)){
+                        chances--;
+                        printf("You have %d chances left.\n", chances);
+                    }
+                    
+                    if (!chances) {
+                        win = -1;
+                        printf("You lost.\n");
+                        break;
+                    }
                 }
                 
             gameBoard[x][y] = 0;
@@ -170,12 +177,23 @@ int main()
 
         // print the game board
         printGameBoard(gameBoard);
-
+        if (checkFinish(gameBoard, mySolution))
+        {
+            win = 1;
+        }
+        
         // If the player wins, exit the while loop, else continue the game.
     }
 
-    // Output the winning or losing message
+    if (win == 1)
+        printf("Congratulations! You have finished a puzzle in %s mode %s %d %s",
+            gameMode ? "hard" : "easy", 
+            gameMode ? "with" : "and used",
+            gameMode ? chances : hintCount,
+            gameMode ? "chances left.\n" : "hints\n"
+        );
 
+    // Output the winning or losing message
 
     return 0;
 }
@@ -267,6 +285,13 @@ int inputBoard(int gameBoard[][9], int x, int y, int sol[][9], int gameMode){
 // This function outputs 1 if the gameBoard is finished (and identical to the solution), and 0 otherwise.
 int checkFinish(int gameBoard[][9], int sol[][9]){
     // TODO: Complete this part
+    for (byte i = 0; i < 9; i++)
+        for (byte j = 0; j < 9; j++) {
+            if(gameBoard[i][j] == 0 || gameBoard[i][j] != sol[i][j])
+                return 0;
+        }
+
+    return 1;
 }
 
 
