@@ -26,6 +26,7 @@
 
 /* NO global variables are allowed */ // <- wtf ?????? seriously ?????? const int NUM = 9; typedef struct {int mat[9][9]} board; is gone
 
+typedef signed char byte;
 void initGameBoard(int gameBoard[][9], int puzzle[][9]);
 void printGameBoard(int gameBoard[][9]);
 int inputBoard(int gameBoard[][9], int x, int y, int sol[][9], int gameMode);
@@ -139,8 +140,8 @@ void initGameBoard(int gameBoard[][9], int puzzle[][9]) {
 
     // TODO: Complete this part
     // Hint: Copies the content of puzzle to gameBoard
-    for (short i = 0; i < 9; i++)
-        for (short j = 0; j < 9; j++)
+    for (byte i = 0; i < 9; i++)
+        for (byte j = 0; j < 9; j++)
             gameBoard[i][j] = puzzle[i][j];
 }
 
@@ -157,12 +158,12 @@ void printGameBoard(int gameBoard[][9]) {
     // brute force = nice
     printf("  012 345 678\n");
 
-    for (short i = 0; i < 9; i++) { 
+    for (byte i = 0; i < 9; i++) { 
         if (i % 3 == 0)
             printf(" +---+---+---+\n");
 
         printf("%d", i);
-        for (short j = 0; j < 9; j++) {
+        for (byte j = 0; j < 9; j++) {
             if(j % 3 == 0) 
                 printf("|");
             int n = gameBoard[i][j];
