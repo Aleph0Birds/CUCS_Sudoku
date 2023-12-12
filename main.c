@@ -148,21 +148,28 @@ int main()
             printGameBoard(gameBoard);
             continue;
         } 
-        else if (inp == 0) {
+
+        if (inp == 0) {
             int num = gameBoard[x][y];
-            if (gameMode == 0 &&  num != mySolution[x][y])
-                printf("Sorry, %d should not be placed at (%d, %d).\n", num, x, y); 
+            // check the answer for different game mode
+            // e.g., call checkSolutionDetail() for Hard mode
+            if ( num != mySolution[x][y])
+                if(gameMode == 0)
+                    printf("Sorry, %d should not be placed at (%d, %d).\n", num, x, y); 
+                else
+                {
+                    chances -= checkSolutionDetail(gameBoard, x, y);
+                    if (!chances) break;
+                    printf("You have %d chances left.\n", chances);
+                }
+                
             gameBoard[x][y] = 0;
         }
         else 
             hintCount++;
 
-        printGameBoard(gameBoard);
-
-        // check the answer for different game mode
-        // e.g., call checkSolutionDetail() for Hard mode
-
         // print the game board
+        printGameBoard(gameBoard);
 
         // If the player wins, exit the while loop, else continue the game.
     }
@@ -273,6 +280,29 @@ int checkFinish(int gameBoard[][9], int sol[][9]){
 
 int checkSolutionDetail(int gameBoard[][9], int x, int y){
     // TODO: Complete this part
+    int num = gameBoard[x][y];
+    for (byte i = 0; i < 9; i++){
+        if (i == y) continue;
+        if (gameBoard[x][i] == num)
+            return !!printf("Check again the numbers in row %d.\n", x);
+    }
+    for (byte j = 0; j < 9; j++) {
+        if (j == x) continue;
+        if (gameBoard[j][y] == num)
+            return !!printf("Check again the numbers in column %d.\n", y);
+    }
+
+    byte subX = x / 3 * 3;
+    byte subY = y / 3 * 3;
+
+    for (byte i = 0; i < 3; i++)
+        for (byte j = 0; j < 3; j++) {
+            if (i+subX == x && j+subY == y) continue;
+            if (gameBoard[i+subX][j+subY] == num)
+                return !!printf("Check again the numbers in the subgrid where (%d, %d) is at.\n", x, y);
+        }
+    
+    return 0;
 }
 
 /* * Part 2 *
