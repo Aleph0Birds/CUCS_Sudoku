@@ -164,6 +164,13 @@ int main()
 
         // print the game board
         printGameBoard(gameBoard);
+        if(isLockBoard(gameBoard)) {
+            printf("Board is locked.\n");
+            win = -1;
+            printf("You lost.\n");
+            break;
+        }
+
         if (checkFinish(gameBoard, mySolution))
         {
             win = 1;
@@ -323,9 +330,39 @@ int checkSolutionDetail(int gameBoard[][9], int x, int y){
     It returns 0 if cell (x, y) is locked; and returns 1 if the cell (x, y) can be filled */
 int checkFillable(int gameBoard[][9], int x, int y){
     // TODO: Complete this part
-    int numX[9] = {0};
-    int numY[9] = {0};
+    int num[9] = {0};
 
+    int num = gameBoard[x][y];
+    for (byte i = 0; i < 9; i++){
+        if (i == y) continue;
+        int v = gameBoard[x][i];
+        if (v == num || !v) continue;
+        num[v]++;
+    }
+    for (byte j = 0; j < 9; j++) {
+        if (j == x) continue;
+        int v = gameBoard[j][y];
+        if (v == num || !v) continue;
+        num[v]++;
+    }
+
+    byte subX = x / 3 * 3;
+    byte subY = y / 3 * 3;
+
+    for (byte i = 0; i < 3; i++)
+        for (byte j = 0; j < 3; j++) {
+            if (i+subX == x && j+subY == y) continue;
+            int v = gameBoard[i+subX][j+subY];
+            if (v == num || !v) continue;
+            num[v]++;
+        }
+
+    // checks if there are values not presented in the column, row and grid.
+    for (byte i = 0; i < 9; i++) 
+        if (num[i] == 0)
+            return 1;
+
+    return 0;
 }
 
 /* 
@@ -336,6 +373,18 @@ int checkFillable(int gameBoard[][9], int x, int y){
     */
 int isLockBoard(int gameBoard[][9]){
     // TODO: Complete this part
+
+    for (byte i = 0; i < 9; i++)
+        for (byte j = 0; j < 9; j++) {
+            if (gameBoard[i][j] == 0) continue;
+            if (!checkFillable(gameBoard, i, j))
+            {
+                printf("Cell (%d, %d) is locked.\n", i, j);
+                return 1;
+            }
+        }
+
+    return 0;
 }
 
 
