@@ -337,13 +337,13 @@ int checkFillable(int gameBoard[][9], int x, int y){
         if (i == y) continue;
         int v = gameBoard[x][i];
         if (v == num || !v) continue;
-        num[v]++;
+        num[v-1]++;
     }
     for (byte j = 0; j < 9; j++) {
         if (j == x) continue;
         int v = gameBoard[j][y];
         if (v == num || !v) continue;
-        num[v]++;
+        num[v-1]++;
     }
 
     byte subX = x / 3 * 3;
@@ -354,7 +354,7 @@ int checkFillable(int gameBoard[][9], int x, int y){
             if (i+subX == x && j+subY == y) continue;
             int v = gameBoard[i+subX][j+subY];
             if (v == num || !v) continue;
-            num[v]++;
+            num[v-1]++;
         }
 
     // checks if there are values not presented in the column, row and grid.
