@@ -75,7 +75,19 @@ int main()
     // gameMode: {0: Easy  1: Hard}
     // chances is the no. of chances in hard mode
     // hintCount stores the no. of hint used.
-    int gameMode, chances = 3, hintCount = 0;
+    int gameMode = 0, chances = 3, hintCount = 0;
+    
+    while (1) {
+        printf("Enter the game mode [0: Easy. 1: Hard]: ");
+        scanf("%d", &gameMode);
+        while(getchar() != '\n'); // consumes more than 1 characters
+        if(gameMode == 1 || gameMode == 0) {
+            printf("You have selected %s mode\n", gameMode ? "Hard" : "Easy");
+            break;
+        }
+        else 
+            printf("Invalid Input.\n");
+    }
 
     // store x, y coordinate of a cell
     int x, y;
@@ -86,7 +98,7 @@ int main()
     // Create YOUR local variables
     /* Initialize the local variables */
     int win = 0, validIn = 0, inputValid = 0;
-    int check = 0;
+    int check = 0; 
 
     // Read the Game mode to gameMode
     // Repeats the input process for an invalid input
@@ -95,14 +107,12 @@ int main()
     // TODO: Read Game Mode and output selected mode
 
     // Call initGameBoard to read the puzzle to gameBoard
-    initGameBoard(gameBoard, myPuzzle);
     // and call printGameBoard to print it
-    printGameBoard(gameBoard);
     /* Uncomment the following statements to test if they are implemented correctly.
        You can add more if you wish. But remember to delete them before submission*/
 
-    // initGameBoard(gameBoard, myPuzzle);
-    // printGameBoard(gameBoard);
+    initGameBoard(gameBoard, myPuzzle);
+    printGameBoard(gameBoard);
 
     // The following line calls the helper function, which print the user inputs leading to a finished puzzle
     // printSolution(gameBoard, mySolution);
@@ -111,15 +121,43 @@ int main()
     // The following is the suggested workflow
     
     // While the game is not finished:
+    while (win == 0){
         // Let the player select a cell
         //    Repeat the cell selection process if it is invalid
-
+        printf("Select a row and column: ");
+        scanf("%d%d", &x, &y);
+        if (x > 9 || x < 0 || y > 9 || y < 0) {
+            printf("Out of bound. Input Again.\n");
+            continue;
+        }
+        else if (gameBoard[x][y] != 0) {
+            printf("Occupied.\n");
+            continue;
+        } 
+        
         // Print Game Board After player chose a valid cell (displayed as 'X')
+        gameBoard[x][y] = -1;
+        printGameBoard(gameBoard);
 
         // Receive input from the player by calling inputBoard().
         // Use the return value from inputBoard() for program control flow.
-
+        int inp = inputBoard(gameBoard, x, y, mySolution, gameMode);
         // If inputBoard indicates invalid input, go back to cell selection
+        if (inp == -1) {
+            gameBoard[x][y] = 0;
+            printGameBoard(gameBoard);
+            continue;
+        } 
+        else if (inp == 0) {
+            int num = gameBoard[x][y];
+            if (gameMode == 0 &&  num != mySolution[x][y])
+                printf("Sorry, %d should not be placed at (%d, %d).\n", num, x, y); 
+            gameBoard[x][y] = 0;
+        }
+        else 
+            hintCount++;
+
+        printGameBoard(gameBoard);
 
         // check the answer for different game mode
         // e.g., call checkSolutionDetail() for Hard mode
@@ -127,7 +165,7 @@ int main()
         // print the game board
 
         // If the player wins, exit the while loop, else continue the game.
-    
+    }
 
     // Output the winning or losing message
 
@@ -171,13 +209,14 @@ void printGameBoard(int gameBoard[][9]) {
                 printf("%d", n);
             else if (n == 0)
                 printf(" ");
-          //else if (n == -1) // selected
+            else if (n == -1) // selected
+                printf("X");
             
         }
         printf("|\n");
     }
 
-    printf(" +---+---+---+");
+    printf(" +---+---+---+\n");
 }
 
 /* inputBoard() reads a char '1' to '9', or 'H' from the player.
@@ -188,7 +227,32 @@ void printGameBoard(int gameBoard[][9]) {
 int inputBoard(int gameBoard[][9], int x, int y, int sol[][9], int gameMode){
     // TODO: Complete this part
     // Hint: Use while loop to keep scanning input from the player
+    char choice;
 
+    printf("Input a number [or H: hint]: ");
+    scanf(" %c", &choice);
+    while(getchar() != '\n');
+
+    if (choice == 'H') {
+        if (gameMode == 1) {
+            printf("No hint in Hardmode.\n");
+            return -1;
+        }
+        
+        gameBoard[x][y] = sol[x][y];
+        return 1;
+    } 
+    else if (choice < '0' && choice > '9')
+    {
+        printf("Invalid input.\n");
+        return -1;
+    }
+    
+    int num = (int)(choice - '0');
+    gameBoard[x][y] = num;
+    return 0;
+
+    
 }
 
 
